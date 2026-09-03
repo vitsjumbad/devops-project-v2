@@ -27,7 +27,7 @@ def health():
 
 @app.route("/version")
 def version():
-        return jsonify({"version": "3.1.0"}), 200
+        return jsonify({"version": "3.1.1"}), 200
 
 @app.route("/burn")
 def burn():

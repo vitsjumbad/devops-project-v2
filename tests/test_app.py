@@ -16,7 +16,7 @@ def test_version():
     response = client.get("/version")
 
     assert response.status_code == 200
-    assert response.get_json()["version"] == "3.1.0"
+    assert response.get_json()["version"] == "3.1.1"
 
 
 def test_home():
