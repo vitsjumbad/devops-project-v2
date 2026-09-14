@@ -32,3 +32,15 @@ def test_home():
     assert "mode" in data
     assert "hostname" in data
     assert "timestamp" in data
+
+def test_info():
+    client = app.test_client()
+    response = client.get("/info")
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert data["application"] == "devops-project-v2"
+    assert data["version"] == "3.1.1"
+    assert data["mode"] == "dev"

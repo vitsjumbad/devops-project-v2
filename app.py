@@ -29,6 +29,14 @@ def health():
 def version():
         return jsonify({"version": "3.1.1"}), 200
 
+@app.route("/info")
+def info():
+    return jsonify({
+        "application": "devops-project-v2",
+        "version": "3.1.1",
+        "mode": os.getenv("APP_MODE", "dev")
+    })
+
 @app.route("/burn")
 def burn():
     total = 0
