@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 import os
 import socket
 from datetime import datetime
+APP_VERSION = "3.1.1"
 
 app = Flask(__name__)
 
@@ -27,13 +28,13 @@ def health():
 
 @app.route("/version")
 def version():
-        return jsonify({"version": "3.1.1"}), 200
+        return jsonify({"version": APP_VERSION}), 200
 
 @app.route("/info")
 def info():
     return jsonify({
         "application": "devops-project-v2",
-        "version": "3.1.1",
+        "version": APP_VERSION,
         "mode": os.getenv("APP_MODE", "dev")
     })
 
