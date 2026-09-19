@@ -13,6 +13,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    outputs:
+      released: ${{ steps.release_result.outputs.released }}
+      version: ${{ steps.release_result.outputs.version }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,7 +31,44 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Record current tags
+        id: before_release
+        run: |
+          git tag --sort=-version:refname > /tmp/tags_before.txt
+
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+
+      - name: Determine release result
+        id: release_result
+        run: |
+          git fetch --tags
+
+          git tag --sort=-version:refname > /tmp/tags_after.txt
+
+          NEW_TAG=$(comm -13 <(sort /tmp/tags_before.txt) <(sort /tmp/tags_after.txt) | head -n 1)
+
+          if [ -n "$NEW_TAG" ]; then
+            VERSION=${NEW_TAG#v}
+
+            echo "released=true" >> "$GITHUB_OUTPUT"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+            echo "New release detected: $NEW_TAG"
+            echo "Release version: $VERSION"
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            echo "version=" >> "$GITHUB_OUTPUT"
+
+            echo "No new release was created."
+          fi
+
+  docker:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      image_version: ${{ needs.release.outputs.version }}
+    secrets: inherit
