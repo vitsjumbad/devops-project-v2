@@ -35,7 +35,8 @@ def info():
     return jsonify({
         "application": "devops-project-v2",
         "version": APP_VERSION,
-        "mode": os.getenv("APP_MODE", "dev")
+        "mode": os.getenv("APP_MODE", "dev"),
+        "hostname": socket.gethostname()
     })
 
 @app.route("/burn")
