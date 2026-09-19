@@ -40,6 +40,7 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build \
+            --build-arg APP_VERSION=${{ inputs.image_version }} \
             -t djdevops2025/devops-project-v2:${{ inputs.image_version }} .
 
       - name: Push Docker Image

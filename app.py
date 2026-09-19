@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import os
 import socket
 from datetime import datetime
-APP_VERSION = "3.1.1"
+APP_VERSION = os.getenv("APP_VERSION", "3.1.1")
 
 app = Flask(__name__)
 
