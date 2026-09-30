@@ -36,7 +36,8 @@ def info():
         "application": "devops-project-v2",
         "version": APP_VERSION,
         "mode": os.getenv("APP_MODE", "dev"),
-        "hostname": socket.gethostname()
+        "hostname": socket.gethostname(),
+        "environment": "devops-demo"
     })
 
 @app.route("/burn")

@@ -45,3 +45,4 @@ def test_info():
     assert data["version"] == "3.1.1"
     assert data["mode"] == "dev"
     assert "hostname" in data
+    assert data["environment"] == "devops-demo"
