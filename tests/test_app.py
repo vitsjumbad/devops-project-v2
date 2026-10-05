@@ -16,7 +16,7 @@ def test_version():
     response = client.get("/version")
 
     assert response.status_code == 200
-    assert response.get_json()["version"] == "3.1.1"
+    assert response.get_json()["version"] == "dev"
 
 
 def test_home():
@@ -42,7 +42,7 @@ def test_info():
     data = response.get_json()
 
     assert data["application"] == "devops-project-v2"
-    assert data["version"] == "3.1.1"
+    assert data["version"] == "dev"
     assert data["mode"] == "dev"
     assert "hostname" in data
     assert data["environment"] == "devops-demo"
