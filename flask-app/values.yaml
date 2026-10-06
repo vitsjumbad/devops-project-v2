@@ -3,7 +3,7 @@ replicaCount: 2
 image:
   repository: djdevops2025/devops-project-v2
   pullPolicy: IfNotPresent
-  tag: "3.4.2"
+  tag: "3.5.0"
 
 imagePullSecrets: []
 
@@ -29,7 +29,7 @@ service:
   targetPort: 5000
 
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations: {}
   hosts:
