@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-project-gitops
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/vitsjumbad/devops-project-v2.git
+    targetRevision: release/3.2.0
+    path: flask-app
+    helm:
+      releaseName: devops-project-gitops
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: ingress.enabled
+          value: "false"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops-gitops
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
