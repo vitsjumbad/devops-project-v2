@@ -23,5 +23,9 @@ spec:
     namespace: devops-gitops
 
   syncPolicy:
-    syncOptions:
+    automated:
+        enabled: true
+        prune: false
+        selfHeal: true
+    syncOptions:    
       - CreateNamespace=true
