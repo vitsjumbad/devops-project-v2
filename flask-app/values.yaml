@@ -16,8 +16,7 @@ serviceAccount:
   annotations: {}
   name: ""
 
-podAnnotations: 
-  learning.devops/task: "gitops-rollout-v1"
+podAnnotations: {}
 podLabels: {}
 
 podSecurityContext: {}
