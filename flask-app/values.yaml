@@ -3,7 +3,7 @@ replicaCount: 2
 image:
   repository: djdevops2025/devops-project-v2
   pullPolicy: IfNotPresent
-  tag: "3.6.0"
+  tag: "3.6.0-gitops-failure-demo"
 
 imagePullSecrets: []
 
