@@ -72,3 +72,70 @@ jobs:
     with:
       image_version: ${{ needs.release.outputs.version }}
     secrets: inherit
+
+
+  update-helm:
+    needs: [release, docker]
+    if: needs.release.outputs.released == 'true' && needs.docker.result == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/3.2.0
+
+      - name: Update Helm image tag
+        env:
+          IMAGE_VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path("flask-app/values.yaml")
+          lines = path.read_text().splitlines()
+
+          in_image = False
+          updated = False
+          version = os.environ["IMAGE_VERSION"]
+
+          for i, line in enumerate(lines):
+              if line == "image:":
+                  in_image = True
+                  continue
+
+              if in_image and line.strip() and not line[0].isspace():
+                  in_image = False
+
+              if in_image and line.startswith("  tag:"):
+                  lines[i] = f'  tag: "{version}"'
+                  updated = True
+                  break
+
+          if not updated:
+              raise SystemExit("ERROR: image.tag was not found in flask-app/values.yaml")
+
+          path.write_text("\n".join(lines) + "\n")
+          print(f"Updated Helm image tag to {version}")
+          PY
+
+      - name: Commit and push Helm image update
+        env:
+          IMAGE_VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          git diff --check
+          git diff -- flask-app/values.yaml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add flask-app/values.yaml
+
+          if git diff --cached --quiet; then
+            echo "Helm image tag already matches ${IMAGE_VERSION}"
+            exit 0
+          fi
+
+          git commit -m "chore: deploy image ${IMAGE_VERSION}"
+          git push origin HEAD:release/3.2.0
